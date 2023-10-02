@@ -12,10 +12,12 @@ export class MovementsController {
     @Body() body: MovementsValidationDto,
     @Res() response: Response,
   ) {
-    const isValid = this.movementsService.validation(body);
+    const periodValidation = this.movementsService.validation(body);
 
-    return isValid
+    const invalidPeriods = periodValidation.filter((p) => !p.isValid);
+
+    return invalidPeriods.length === 0
       ? response.status(202).json({ message: 'Accepted' })
-      : response.status(418).json({ reason: 'TBD' });
+      : response.status(418).json({ reason: { invalidPeriods } });
   }
 }
