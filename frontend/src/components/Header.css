@@ -1,0 +1,14 @@
+.app-logo {
+  height: 10vmin;
+  margin-left: 2vmin;
+  pointer-events: none;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  font-size: calc(10px + 2vmin);
+  background-color: #181a1f;
+  color: white;
+  gap: 2vmin;
+}
