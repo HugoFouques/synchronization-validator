@@ -21,7 +21,10 @@ describe('Movements Controller (e2e)', () => {
       .post('/movements/validation')
       .send({
         movements: [],
-        balances: [],
+        balances: [
+          { date: '2023-08-01', balance: 100 },
+          { date: '2023-09-01', balance: 100 },
+        ],
       });
     expect(response.status).toEqual(202);
     expect(response.body.message).toEqual('Accepted');

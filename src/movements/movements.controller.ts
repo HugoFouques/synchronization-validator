@@ -1,13 +1,22 @@
-import { Controller, Post, Body, Res } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { MovementValidationService } from './movements.service';
 import { MovementsValidationDto } from './dto/movement-validation.dto';
+import { AtLeastTwoBalancesPipe } from './min-balance-validation.pipe';
 
 @Controller('movements')
 export class MovementsController {
   constructor(private movementsService: MovementValidationService) {}
 
   @Post('validation')
+  @UsePipes(new ValidationPipe(), AtLeastTwoBalancesPipe)
   validateMovements(
     @Body() body: MovementsValidationDto,
     @Res() response: Response,
