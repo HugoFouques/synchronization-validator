@@ -1,19 +1,14 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import './MovementValidator.css';
 import FileUploader from './FileUpload';
 import FileValidator from './FileValidator';
-
-export type ValidationStatus =
-  | 'Validated'
-  | 'Failed'
-  | 'Processing'
-  | 'Unchecked';
-
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+import ReasonDisplay from './ReasonDisplay';
+import { Period, ValidationStatus } from './types';
 
 export default function FileUpload() {
   const [file, setFile] = useState<File>();
   const [IsValidated, setIsValidated] = useState<ValidationStatus>('Unchecked');
+  const [apiReasons, setApiReasons] = useState<Period[]>([]);
 
   const handleFileUpload = (files: FileList) => {
     setFile(files?.[0]);
@@ -22,9 +17,45 @@ export default function FileUpload() {
 
   const handleFileValidation = async (file: File) => {
     setIsValidated('Processing');
-    await delay(5000);
-    await console.log(file);
-    setIsValidated('Validated');
+
+    const fileContent = await file.text();
+
+    try {
+      const response = await fetch(
+        'http://localhost:3000/movements/validation',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: fileContent,
+        },
+      );
+
+      const data = await response.json();
+
+      if (200 < response.status && response.status < 300) {
+        setIsValidated('Validated');
+        setApiReasons([]);
+      } else if (response.status === 418) {
+        setIsValidated('Failed');
+
+        const periodsArray: Period[] = data?.reason?.invalidPeriods?.map(
+          (item: any) => ({
+            startDate: new Date(item.startDate),
+            endDate: new Date(item.endDate),
+          }),
+        );
+
+        setApiReasons(periodsArray);
+      } else {
+        setIsValidated('Failed');
+        setApiReasons([]);
+      }
+    } catch {
+      setIsValidated('Failed');
+      setApiReasons([]);
+    }
   };
 
   return (
@@ -36,6 +67,9 @@ export default function FileUpload() {
           status={IsValidated}
           validateFile={handleFileValidation}
         />
+      )}
+      {IsValidated === 'Failed' && apiReasons.length > 0 && (
+        <ReasonDisplay apiReasons={apiReasons} />
       )}
     </div>
   );

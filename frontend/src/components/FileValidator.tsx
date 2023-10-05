@@ -1,5 +1,5 @@
-import { ValidationStatus } from './MovementValidator';
 import './FileValidator.css';
+import { ValidationStatus } from './types';
 
 export default function FileValidator({
   file,
