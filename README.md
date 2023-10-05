@@ -40,6 +40,7 @@ Il s'agit d'un application NestJS qui sert une API avec comme route `/movements/
 
 ```bash
 $ cd frontend
+$ npm install
 $ npm start
 ```
 
