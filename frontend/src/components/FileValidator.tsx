@@ -42,14 +42,16 @@ export default function FileValidator({
   return (
     <div className="validator">
       <table>
-        <tr>
-          <th>File name</th>
-          <th>Status</th>
-        </tr>
-        <tr>
-          <td>{file.name}</td>
-          <td>{displayStatus()}</td>
-        </tr>
+        <tbody>
+          <tr>
+            <th>File name</th>
+            <th>Status</th>
+          </tr>
+          <tr>
+            <td>{file.name}</td>
+            <td>{displayStatus()}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   );

@@ -27,6 +27,8 @@ export class MovementsController {
 
     return invalidPeriods.length === 0
       ? response.status(202).json({ message: 'Accepted' })
-      : response.status(418).json({ reason: { invalidPeriods } });
+      : response
+          .status(418)
+          .json({ message: 'I’m a teapot', reason: { invalidPeriods } });
   }
 }
